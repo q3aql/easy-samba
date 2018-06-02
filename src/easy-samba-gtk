@@ -1,0 +1,431 @@
+#!/bin/bash
+
+##############################################################
+# Crear carpetas compartidas en Linux (GTK)                  #
+# U. Modificacion: 02-06-2018                                #
+# Autor: q3aql                                               #
+# Contacto: q3aql@openmailbox.org                            #
+# Licencia: GPL v2.0                                         #
+##############################################################
+VERSION="1.4 (GTK)"
+M_DATE="020618"
+
+# Parametros globales
+linuxSambaFolder="/opt/easy-samba"
+sambaConfig="/etc/samba/smb.conf"
+sambaBackup="/etc/samba/smb.conf.orig"
+homeUsers="/home"
+homeUsersList="/tmp/easy-samba-users.list"
+sambaFoldersList="/tmp/easy-samba-folders.list"
+sambaSedFolder="/tmp/easy-samba/word/"
+
+# Mostrar aviso de usuario de usuario root
+#function rootMessage() {
+#	zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Nota: Recuerda haber ejecutado como root!"
+#}
+
+# Funcion para realizar copia del fichero smb.conf original
+function backupSmbConf() {
+	if [ -f ${sambaBackup} ] ; then
+		echo "OK" > /dev/null
+	else
+		echo "" >> ${sambaConfig}
+		echo "" >> ${sambaConfig}
+		cp -rf ${sambaConfig} ${sambaBackup} 2> /dev/null
+	fi
+}
+
+# Funcion para eliminar espacios y simbolos
+# Sintaxis: convertText "<text>"
+function convertText() {
+	wordToConvert=${1}
+	sambaSedFile="${sambaSedFolder}/easy-samba-${RANDOM}.txt"
+	mkdir -p ${sambaSedFolder} && chmod 777 -R ${sambaSedFolder} 2> /dev/null
+	echo "${wordToConvert}" > ${sambaSedFile}
+	# Borrar espacios
+	sed -i 's/ /_/g' "${sambaSedFile}" &> /dev/null
+	# Borrar simbolos
+	symbolsList="[ ] @ { } | \ / ~ # $ % & ? ¿ = ( ) < > ! ¡"
+	for findSymbol in ${symbolsList} ; do
+		sed -i "s/${findSymbol}//g" "${sambaSedFile}" &> /dev/null
+	done
+	# Borrar el resto de simbolos
+	sed -i 's/*//g' "${sambaSedFile}" &> /dev/null
+	sed -i 's/"//g' "${sambaSedFile}" &> /dev/null
+	sed -i "s/^//g" "${sambaSedFile}" &> /dev/null
+	# Cambiar algunos simbolos
+	sed -i 's/+/_/g' "${sambaSedFile}" &> /dev/null
+	sed -i 's/:/-/g' "${sambaSedFile}" &> /dev/null
+	sed -i 's/;/-/g' "${sambaSedFile}" &> /dev/null
+	# Mostrar texto convertido
+	wordToConvert=$(cat ${sambaSedFile})
+	echo ${wordToConvert}
+}
+
+# Funcion para crear enlace en el escritorio/home de los usuarios
+# Sintaxis: createFolderLink [carpeta]
+
+function createFolderLink() {
+zenity --question --title "easy-samba ${VERSION} (${M_DATE})" --cancel-label="No" --ok-label="Si" --text "Deseas crear un enlace en el escritorio/home para los usuarios locales?"
+createLink=$?
+if [ ${createLink} -eq 1 ] ; then
+  echo "nule" > /dev/null
+else
+  if [ "$(ls -A ${homeUsers})" ] ; then
+  		cd ${homeUsers}
+  		ls > ${homeUsersList}
+      for userDetected in $(cat ${homeUsersList}) ; do
+          if [ -d ${homeUsers}/${userDetected}/Desktop ] ; then
+            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/Desktop/ 2> /dev/null
+            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
+            output=$?
+          elif [ -d ${homeUsers}/${userDetected}/Escritorio ] ; then
+            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/Escritorio/ 2> /dev/null
+            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
+            output=$?
+          elif [ -d ${homeUsers}/${userDetected}/Escriptori ] ; then
+            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/Escriptori/ 2> /dev/null
+            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
+            output=$?
+          else
+            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
+            output=$?
+          fi
+  		done
+      if [ ${output} -eq 0 ] ; then
+        zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Enlaces creados correctamente!"
+      else
+        zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: Fallo al crear los enlaces!"
+      fi
+  else
+    zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Usuarios no encontrados en ${homeUsers}"
+  fi
+fi
+}
+
+# Funcion para borrar los enlaces en el escritorio/home de los usuarios
+# Sintaxis: deleteFolderLink [carpeta]
+function deleteFolderLink() {
+zenity --question --title "easy-samba ${VERSION} (${M_DATE})" --cancel-label="No" --ok-label="Si" --text "Deseas borrar los enlaces en el escritorio/home de los usuarios locales?"
+deleteLink=$?
+if [ ${deleteLink} -eq 1 ] ; then
+  echo "nule" > /dev/null
+else
+  if [ "$(ls -A ${homeUsers})" ] ; then
+  		cd ${homeUsers}
+  		ls > ${homeUsersList}
+      for userDetected in $(cat ${homeUsersList}) ; do
+          if [ -d ${homeUsers}/${userDetected}/Desktop ] ; then
+            rm -f ${homeUsers}/${userDetected}/Desktop/${1} 2> /dev/null
+            rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
+            output=$?
+          elif [ -d ${homeUsers}/${userDetected}/Escritorio ] ; then
+            rm -f ${homeUsers}/${userDetected}/Escritorio/${1} 2> /dev/null
+            rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
+            output=$?
+          elif [ -d ${homeUsers}/${userDetected}/Escriptori ] ; then
+            rm -f ${homeUsers}/${userDetected}/Escriptori/${1} 2> /dev/null
+            rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
+            output=$?
+          else
+            rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
+            output=$?
+          fi
+  		done
+      if [ ${output} -eq 0 ] ; then
+        zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Enlaces borrados correctamente!"
+      else
+        zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: Fallo al borrar los enlaces!"
+      fi
+  else
+    zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Usuarios no encontrados en ${homeUsers}"
+  fi
+fi
+}
+
+# Funcion para crear carpeta compartida con acceso para todos
+function newFolderEveryone() {
+	folder=$(zenity --entry --title "easy-samba ${VERSION} (${M_DATE})" --text "Introduce el nombre de la carpeta que deseas crear (sin acentos):")
+	formatText=$(convertText "${folder}")
+	folder=${formatText}
+	if [ -z ${folder} ] ; then
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Debes introducir un nombre de carpeta!"
+	elif [ -d ${linuxSambaFolder}/${folder} ] ; then
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "La carpeta '${folder}' ya está creada, elige otro nombre"
+	else
+		mkdir -p ${linuxSambaFolder}/${folder} 2> /dev/null
+		output=$?
+		if [ ${output} -ne 0 ] ; then
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: Fallo al crear la carpeta compartida '${folder}'"
+		else
+			chmod 777 -R ${linuxSambaFolder}/${folder}
+			echo "[${folder}]" >> ${sambaConfig}
+			echo "# Folder to ${linuxSambaFolder}/${folder} # 00bc00" >> ${sambaConfig}
+			echo "path = ${linuxSambaFolder}/${folder}" >> ${sambaConfig}
+			echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
+			echo "browseable = yes" >> ${sambaConfig}
+			echo "writeable = yes" >> ${sambaConfig}
+			echo "read only = no" >> ${sambaConfig}
+			echo "guest ok = yes" >> ${sambaConfig}
+			echo "" >> ${sambaConfig}
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Carpeta compartida '${folder}' creada con exito!"
+			createFolderLink ${folder}
+		fi
+	fi
+}
+
+# Funcion para crear carpeta compartida de solo lectura
+function newFolderReadOnly() {
+	folder=$(zenity --entry --title "easy-samba ${VERSION} (${M_DATE})" --text "Introduce el nombre de la carpeta que deseas crear (sin acentos):")
+	formatText=$(convertText "${folder}")
+	folder=${formatText}
+	if [ -z ${folder} ] ; then
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Debes introducir un nombre de carpeta!"
+	elif [ -d ${linuxSambaFolder}/${folder} ] ; then
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "La carpeta '${folder}' ya está creada, elige otro nombre"
+	else
+		mkdir -p ${linuxSambaFolder}/${folder} 2> /dev/null
+		output=$?
+		if [ ${output} -ne 0 ] ; then
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: Fallo al crear la carpeta compartida '${folder}'"
+		else
+			chmod 777 -R ${linuxSambaFolder}/${folder}
+			echo "[${folder}]" >> ${sambaConfig}
+			echo "# Folder to ${linuxSambaFolder}/${folder} # 00bc00" >> ${sambaConfig}
+			echo "path = ${linuxSambaFolder}/${folder}" >> ${sambaConfig}
+			echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
+			echo "browseable = yes" >> ${sambaConfig}
+			echo "writeable = no" >> ${sambaConfig}
+			echo "read only = yes" >> ${sambaConfig}
+			echo "guest ok = yes" >> ${sambaConfig}
+			echo "" >> ${sambaConfig}
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Carpeta compartida '${folder}' (solo lectura) creada con exito!"
+			createFolderLink ${folder}
+		fi
+	fi
+}
+
+# Crear carpeta compartida para un usuario
+function newFolderForUser() {
+	folder=$(zenity --entry --title "easy-samba ${VERSION} (${M_DATE})" --text "Introduce el nombre de la carpeta que deseas crear (sin acentos):")
+	formatText=$(convertText "${folder}")
+	folder=${formatText}
+	if [ -z ${folder} ] ; then
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Debes introducir un nombre de carpeta!"
+	elif [ -d ${linuxSambaFolder}/${folder} ] ; then
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "La carpeta '${folder}' ya está creada, elige otro nombre"
+	else
+		mkdir -p ${linuxSambaFolder}/${folder} 2> /dev/null
+		output=$?
+		if [ ${output} -ne 0 ] ; then
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: Fallo al crear la carpeta compartida '${folder}'"
+		else
+			forUser=$(zenity --entry --title "easy-samba ${VERSION} (${M_DATE})" --text "Introduce el nombre del usuario:")
+			randomFolder=/tmp/easy-samba/${RANDOM}-${RANDOM}
+			mkdir -p ${randomFolder}
+			chown ${forUser} ${randomFolder} 2> /dev/null
+			output=$?
+			if [ ${output} -ne 0 ] ; then
+				rm -rf ${linuxSambaFolder}/${folder}
+				zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: No existe el usuario especificado!"
+			else
+				chmod 755 -R ${linuxSambaFolder}/${folder}
+				echo "[${folder}]" >> ${sambaConfig}
+				echo "# Folder to ${linuxSambaFolder}/${folder} # 00bc00" >> ${sambaConfig}
+				echo "path = ${linuxSambaFolder}/${folder}" >> ${sambaConfig}
+				echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
+				echo "browseable = yes" >> ${sambaConfig}
+				echo "writeable = yes" >> ${sambaConfig}
+				echo "read only = no" >> ${sambaConfig}
+				echo "guest ok = yes" >> ${sambaConfig}
+				echo "" >> ${sambaConfig}
+				zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Carpeta compartida '${folder}' (para ${forUser}) creada con exito!"
+				createFolderLink ${folder}
+			fi
+		fi
+	fi
+}
+
+# Crear carpeta compartida para imprimir
+function newFolderPrintable() {
+	folder=$(zenity --entry --title "easy-samba ${VERSION} (${M_DATE})" --text "Introduce el nombre de la carpeta que deseas crear (sin acentos):")
+	formatText=$(convertText "${folder}")
+	folder=${formatText}
+	if [ -z ${folder} ] ; then
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Debes introducir un nombre de carpeta!"
+	elif [ -d ${linuxSambaFolder}/${folder} ] ; then
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "La carpeta '${folder}' ya está creada, elige otro nombre"
+	else
+		mkdir -p ${linuxSambaFolder}/${folder} 2> /dev/null
+		output=$?
+		if [ ${output} -ne 0 ] ; then
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: Fallo al crear la carpeta compartida '${folder}'"
+		else
+			chmod 777 -R ${linuxSambaFolder}/${folder}
+			echo "[${folder}]" >> ${sambaConfig}
+			echo "# Folder to ${linuxSambaFolder}/${folder} # 00bc00" >> ${sambaConfig}
+			echo "path = ${linuxSambaFolder}/${folder}" >> ${sambaConfig}
+			echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
+			echo "browseable = yes" >> ${sambaConfig}
+			echo "writeable = yes" >> ${sambaConfig}
+			echo "printable = yes" >> ${sambaConfig}
+			echo "guest ok = yes" >> ${sambaConfig}
+			echo "" >> ${sambaConfig}
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Carpeta compartida '${folder}' (printable) creada con exito!"
+			createFolderLink ${folder}
+		fi
+	fi
+}
+
+# Funcion para reiniciar el servicio de Samba
+function restartSamba() {
+	zenity --question --title "easy-samba ${VERSION} (${M_DATE})" --cancel-label="No" --ok-label="Si" --text "Deseas reiniciar los servicios de Samba?"
+	sambaSN=$?
+	if [ "${sambaSN}" == "1" ] ; then
+		echo "nule" > /dev/null
+	else
+		sleep 4 | zenity --progress --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Reiniciando servicios de Samba"
+		/etc/init.d/samba restart &> /dev/null
+		systemctl restart smbd.service 2> /dev/null
+		systemctl restart nmbd.service 2> /dev/null
+		systemctl restart smb.service 2> /dev/null
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Servicios de Samba reiniciados"
+	fi
+}
+
+# Funcion para borrar todas las carpetas compartidas
+function restoreSmb() {
+	echo ""
+	zenity --question --title "easy-samba ${VERSION} (${M_DATE})" --cancel-label="No" --ok-label="Si" \
+--text "Nota: Se van a eliminar todas las carpetas compartidas y su contenido\n\nImportante: Se volvera al estado inicial del fichero 'smb.conf' antes de\nde ejecutar 'easy-samba' por primera vez\n\nDeseas continuar?"
+	deleteFolder=$?
+	if [ ${deleteFolder} -eq 0 ] ; then
+		sleep 3 | zenity --progress --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Borrando carpetas"
+		rm -rf ${linuxSambaFolder}/* | zenity --progress --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Finalizando proceso de borrado"
+		output=$?
+		if [ ${output} -eq 0 ] ; then
+			cp -rf ${sambaBackup} ${sambaConfig} 2> /dev/null
+			#rm -rf ${sambaBackup} 2> /dev/null
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Carpetas borradas con exito!"
+			restartSamba
+		else
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error al borrar las carpetas compartidas"
+		fi
+	else
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Se ha anulado el proceso de restauracion"
+	fi
+}
+
+# Funcion para mostrar carpetas compartidas
+function viewFolders() {
+	if [ "$(ls -A ${linuxSambaFolder})" ] ; then
+		cd ${linuxSambaFolder}
+		ls > ${sambaFoldersList}
+		folderList=""
+		for folderDetected in $(cat ${sambaFoldersList}) ; do
+			folderList="${folderList} ${folderDetected}"
+		done
+		folder=$(zenity --width=390 --height=300 --list --title "easy-samba ${VERSION} ($M_DATE)" \
+		--column "Lista de carpetas compartidas disponibles:" ${folderList})
+		if [ -z ${folder} ] ; then
+			echo "nule" > /dev/null
+		elif [ -d ${linuxSambaFolder}/${folder} ] ; then
+      zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Nombre de carpeta: ${folder}\n\nRuta: ${linuxSambaFolder}/${folder}"
+		else
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: La carpeta '${folder}' no existe!"
+		fi
+	else
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Actualmente no hay carpetas compartidas!"
+	fi
+}
+
+# Funcion para borrar una carpeta compartida
+function removeFolder() {
+	if [ "$(ls -A ${linuxSambaFolder})" ] ; then
+		cd ${linuxSambaFolder}
+		ls > ${sambaFoldersList}
+		folderList=""
+		for folderDetected in $(cat ${sambaFoldersList}) ; do
+			folderList="${folderList} ${folderDetected}"
+		done
+		folder=$(zenity --width=390 --height=300 --list --title "easy-samba ${VERSION} ($M_DATE)" \
+		--column "Selecciona una carpeta para borrar:" ${folderList})
+		if [ -z ${folder} ] ; then
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Debes seleccionar una carpeta de la lista"
+		elif [ -d ${linuxSambaFolder}/${folder} ] ; then
+			sleep 2 | zenity --progress --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Borrando carpeta..."
+			rm -rf ${linuxSambaFolder}/${folder} 2> /dev/null
+			output=$?
+			if [ ${output} -eq 0 ] ; then
+				readLine=$(cat ${sambaConfig} | grep "# Folder to ${linuxSambaFolder}/${folder} # 00bc00" -n | cut -d ":" -f 1)
+				if [ -z ${readLine} ] ; then
+				  zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "La carpeta '${folder}' ha sido borrada pero no se ha encontrado en 'smb.conf'"
+				else
+				  initLine=$(expr ${readLine} - 1)
+				  endLine=$(expr ${readLine} + 7)
+				  totalLines=$(cat /etc/samba/smb.conf | wc -l)
+				  count=1
+				  mkdir -p /tmp/easy-samba/
+				  echo > /tmp/easy-samba/smb.conf
+				  while [ ${count} -lt $initLine ] ; do
+					cat /etc/samba/smb.conf | head -${count} | tail -1 >> /tmp/easy-samba/smb.conf
+					count=$(expr ${count} + 1)
+				  done
+				  count=$(expr ${endLine} + 1)
+				  while [ ${count} -le ${totalLines} ] ; do
+					cat ${sambaConfig} | head -${count} | tail -1 >> /tmp/easy-samba/smb.conf
+					count=$(expr ${count} + 1)
+				  done
+				  cp -rf /tmp/easy-samba/smb.conf ${sambaConfig}
+				  zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "La carpeta '${folder} ha sido borrada con exito!"
+				  deleteFolderLink ${folder}
+				  restartSamba
+				fi
+			else
+				zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: No se ha podido borrar la carpeta '${folder}'"
+			fi
+		else
+			zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: La carpeta '${folder}' no existe!"
+		fi
+	else
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "No hay carpetas disponibles para borrar!"
+	fi
+}
+
+# Mostrar menu con todas las opciones
+mostrarMenu=0
+#rootMessage
+backupSmbConf
+while [ ${mostrarMenu} -eq 0 ] ; do
+	clear
+	opcion=$(zenity --width=390 --height=355 --list --title "easy-samba ${VERSION} ($M_DATE)" \
+	--column "Selecciona una opcion:" "Crear carpeta compartida" "Crear carpeta compartida (solo lectura)" \
+	"Crear carpeta compartida (para un usuario)" "Crear carpeta compartida (printable)" \
+	"Reiniciar servicios de Samba" "Ver carpetas compartidas disponibles" "Borrar carpeta compartida" \
+	"Restaurar smb.conf" "Salir")
+	if [ "${opcion}" == "Crear carpeta compartida" ] ; then
+		newFolderEveryone
+		restartSamba
+	elif [ "${opcion}" == "Crear carpeta compartida (solo lectura)" ] ; then
+		newFolderReadOnly
+		restartSamba
+	elif [ "${opcion}" == "Crear carpeta compartida (para un usuario)" ] ; then
+		newFolderForUser
+		restartSamba
+	elif [ "${opcion}" == "Crear carpeta compartida (printable)" ] ; then
+		newFolderPrintable
+		restartSamba
+	elif [ "${opcion}" == "Reiniciar servicios de Samba" ] ; then
+		restartSamba
+	elif [ "${opcion}" == "Ver carpetas compartidas disponibles" ] ; then
+		viewFolders
+	elif [ "${opcion}" == "Borrar carpeta compartida" ] ; then
+		removeFolder
+	elif [ "${opcion}" == "Restaurar smb.conf" ] ; then
+		restoreSmb
+	elif [ "${opcion}" == "Salir" ] ; then
+		mostrarMenu=1
+	else
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Elige una de las opciones del menu"
+	fi
+done
