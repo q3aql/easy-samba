@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Easy-Samba
+GenericName=Easy-Samba
+Comment=Crea carpetas compartidas con Samba de forma facil
+TryExec=easy-samba-gtk-admin
+Exec=easy-samba-gtk-admin
+Icon=/usr/share/icons/easy-samba/easy-samba.png
+Type=Application
+Categories=GTK;Utility;TerminalEmulator;
+
