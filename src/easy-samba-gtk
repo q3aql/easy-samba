@@ -2,13 +2,13 @@
 
 ##############################################################
 # Crear carpetas compartidas en Linux (GTK)                  #
-# U. Modificacion: 02-06-2018                                #
+# U. Modificacion: 07-06-2018                                #
 # Autor: q3aql                                               #
 # Contacto: q3aql@openmailbox.org                            #
 # Licencia: GPL v2.0                                         #
 ##############################################################
-VERSION="1.4 (GTK)"
-M_DATE="020618"
+VERSION="1.5 (GTK)"
+M_DATE="070618"
 
 # Parametros globales
 linuxSambaFolder="/opt/easy-samba"
@@ -60,6 +60,25 @@ function convertText() {
 	# Mostrar texto convertido
 	wordToConvert=$(cat ${sambaSedFile})
 	echo ${wordToConvert}
+}
+
+# Funcion para extraer el nombre de la carpeta de una ruta
+function extractFolder() {
+  pathToExtract="${1}/"
+  findFolder=0
+  count=1
+  nameFolder=$(echo ${pathToExtract} | cut -d "/" -f ${count})
+  count=$(expr $count + 1)
+  while [ ${findFolder} -eq 0 ] ; do
+    nameFolderTemp=$(echo ${pathToExtract} | cut -d "/" -f ${count})
+    if [ -z "${nameFolderTemp}" ] ; then
+      findFolder=1
+    else
+      nameFolder="${nameFolderTemp}"
+      count=$(expr $count + 1)
+    fi
+  done
+  echo "${nameFolder}"
 }
 
 # Funcion para crear enlace en el escritorio/home de los usuarios
@@ -141,6 +160,40 @@ else
     zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Usuarios no encontrados en ${homeUsers}"
   fi
 fi
+}
+
+# Funcion para agregar una carpeta a Samba
+function addNewFolder() {
+	folder=$(zenity --entry --title "easy-samba ${VERSION} (${M_DATE})" --text "Introduce la ruta absoluta de la carpeta a agregar:")
+  pathExtracted=$(extractFolder "${folder}")
+  endFolder=$(convertText "${pathExtracted}")
+	if [ -z ${folder} ] ; then
+		zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Debes introducir la ruta absoluta de una carpeta!"
+  elif [ -d "${folder}" ] ; then
+  	if [ -d ${linuxSambaFolder}/${endFolder} ] ; then
+  		zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Una carpeta con el mismo nombre ya se encuentra agregada o creada!"
+  	else
+  		ln -s "${folder}" ${linuxSambaFolder}/${endFolder} 2> /dev/null
+  		output=$?
+  		if [ ${output} -ne 0 ] ; then
+  			zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: Fallo al agregar la carpeta '${folder}'"
+  		else
+        echo "[${endFolder}]" >> ${sambaConfig}
+        echo "# Folder to ${linuxSambaFolder}/${endFolder} # 00bc00" >> ${sambaConfig}
+        echo "path = ${linuxSambaFolder}/${endFolder}" >> ${sambaConfig}
+        echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
+        echo "browseable = yes" >> ${sambaConfig}
+        echo "writeable = yes" >> ${sambaConfig}
+        echo "read only = no" >> ${sambaConfig}
+        echo "guest ok = yes" >> ${sambaConfig}
+        echo "" >> ${sambaConfig}
+  			zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Carpeta '${folder}' agregada con exito!"
+  			createFolderLink ${folder}
+  		fi
+    fi
+  else
+    zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "La carpeta introducida no existe!"
+	fi
 }
 
 # Funcion para crear carpeta compartida con acceso para todos
@@ -398,12 +451,15 @@ mostrarMenu=0
 backupSmbConf
 while [ ${mostrarMenu} -eq 0 ] ; do
 	clear
-	opcion=$(zenity --width=390 --height=355 --list --title "easy-samba ${VERSION} ($M_DATE)" \
-	--column "Selecciona una opcion:" "Crear carpeta compartida" "Crear carpeta compartida (solo lectura)" \
-	"Crear carpeta compartida (para un usuario)" "Crear carpeta compartida (printable)" \
-	"Reiniciar servicios de Samba" "Ver carpetas compartidas disponibles" "Borrar carpeta compartida" \
-	"Restaurar smb.conf" "Salir")
-	if [ "${opcion}" == "Crear carpeta compartida" ] ; then
+	opcion=$(zenity --width=390 --height=380 --list --title "easy-samba ${VERSION} ($M_DATE)" \
+	--column "Selecciona una opcion:" "Agregar carpeta a Samba" "Crear carpeta compartida" \
+	"Crear carpeta compartida (solo lectura)" "Crear carpeta compartida (para un usuario)" \
+	"Crear carpeta compartida (printable)" "Reiniciar servicios de Samba" \
+	"Ver carpetas compartidas disponibles" "Borrar carpeta compartida" "Restaurar smb.conf" "Salir")
+	if [ "${opcion}" == "Agregar carpeta a Samba" ] ; then
+		addNewFolder
+		restartSamba
+	elif [ "${opcion}" == "Crear carpeta compartida" ] ; then
 		newFolderEveryone
 		restartSamba
 	elif [ "${opcion}" == "Crear carpeta compartida (solo lectura)" ] ; then

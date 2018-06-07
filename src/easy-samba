@@ -2,13 +2,13 @@
 
 ##############################################################
 # Crear carpetas compartidas en Linux                        #
-# U. Modificacion: 02-06-2018                                #
+# U. Modificacion: 07-06-2018                                #
 # Autor: q3aql                                               #
 # Contacto: q3aql@openmailbox.org                            #
 # Licencia: GPL v2.0                                         #
 ##############################################################
-VERSION="1.4"
-M_DATE="020618"
+VERSION="1.5"
+M_DATE="070618"
 
 # Parametros globales
 linuxSambaFolder="/opt/easy-samba"
@@ -63,6 +63,25 @@ function convertText() {
 	# Mostrar texto convertido
 	wordToConvert=$(cat ${sambaSedFile})
 	echo ${wordToConvert}
+}
+
+# Funcion para extraer el nombre de la carpeta de una ruta
+function extractFolder() {
+  pathToExtract="${1}/"
+  findFolder=0
+  count=1
+  nameFolder=$(echo ${pathToExtract} | cut -d "/" -f ${count})
+  count=$(expr $count + 1)
+  while [ ${findFolder} -eq 0 ] ; do
+    nameFolderTemp=$(echo ${pathToExtract} | cut -d "/" -f ${count})
+    if [ -z "${nameFolderTemp}" ] ; then
+      findFolder=1
+    else
+      nameFolder="${nameFolderTemp}"
+      count=$(expr $count + 1)
+    fi
+  done
+  echo "${nameFolder}"
 }
 
 # Funcion para crear enlace en el escritorio/home de los usuarios
@@ -141,6 +160,49 @@ else
   	echo "* Usuarios no encontrados en ${homeUsers}"
   fi
 fi
+}
+
+# Funcion para agregar una carpeta a Samba
+function addNewFolder() {
+	echo ""
+	echo -n "* Introduce la ruta absoluta de la carpeta a agregar: " ; read folder
+  pathExtracted=$(extractFolder "${folder}")
+  endFolder=$(convertText "${pathExtracted}")
+	if [ -z "${folder}" ] ; then
+		echo "* Debes introducir la ruta absoluta de una carpeta!"
+		echo ""
+		echo -n "* Pulsa INTRO para continuar... " ; read continue
+  elif [ -d "${folder}" ] ; then
+  	if [ -d ${linuxSambaFolder}/${endFolder} ] ; then
+  		echo "* Una carpeta con el mismo nombre ya se encuentra agregada o creada!"
+  		echo ""
+  		echo -n "* Pulsa INTRO para continuar... " ; read continue
+  	else
+  		ln -s "${folder}" ${linuxSambaFolder}/${endFolder} 2> /dev/null
+  		output=$?
+  		if [ ${output} -ne 0 ] ; then
+  			echo "* Error: Fallo al agregar la carpeta '${folder}'"
+  			echo ""
+  			echo -n "* Pulsa INTRO para continuar... " ; read continue
+  		else
+  			echo "[${endFolder}]" >> ${sambaConfig}
+  			echo "# Folder to ${linuxSambaFolder}/${endFolder} # 00bc00" >> ${sambaConfig}
+  			echo "path = ${linuxSambaFolder}/${endFolder}" >> ${sambaConfig}
+  			echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
+  			echo "browseable = yes" >> ${sambaConfig}
+  			echo "writeable = yes" >> ${sambaConfig}
+  			echo "read only = no" >> ${sambaConfig}
+  			echo "guest ok = yes" >> ${sambaConfig}
+  			echo "" >> ${sambaConfig}
+  			echo "* Carpeta '${folder}' agregada con exito!"
+  			createFolderLink ${endFolder}
+  		fi
+    fi
+  else
+    echo "* La carpeta introducida no existe!"
+		echo ""
+		echo -n "* Pulsa INTRO para continuar... " ; read continue
+	fi
 }
 
 # Funcion para crear carpeta compartida con acceso para todos
@@ -441,39 +503,43 @@ while [ ${mostrarMenu} -eq 0 ] ; do
 	echo ""
 	echo "* easy-samba ${VERSION} (${M_DATE})"
 	echo ""
-	echo " 1 - Crear carpeta compartida"
-	echo " 2 - Crear carpeta compartida (solo lectura)"
-	echo " 3 - Crear carpeta compartida (para un usuario)"
-	echo " 4 - Crear carpeta compartida (printable)"
-	echo " 5 - Reiniciar servicios de Samba"
-	echo " 6 - Ver carpetas compartidas disponibles"
-	echo " 7 - Borrar carpeta compartida"
-	echo " 8 - Restaurar smb.conf"
+	echo " 1 - Agregar carpeta a Samba"
+	echo " 2 - Crear carpeta compartida"
+	echo " 3 - Crear carpeta compartida (solo lectura)"
+	echo " 4 - Crear carpeta compartida (para un usuario)"
+	echo " 5 - Crear carpeta compartida (printable)"
+	echo " 6 - Reiniciar servicios de Samba"
+	echo " 7 - Ver carpetas compartidas disponibles"
+	echo " 8 - Borrar carpeta compartida"
+	echo " 9 - Restaurar smb.conf"
 	echo ""
-	echo " 9 - Salir"
+	echo " 10 - Salir"
 	echo ""
 	echo -n " * Elige una opcion: " ; read opcion
 	if [ "${opcion}" == "1" ] ; then
-		newFolderEveryone
+		addNewFolder
 		restartSamba
 	elif [ "${opcion}" == "2" ] ; then
-		newFolderReadOnly
+		newFolderEveryone
 		restartSamba
 	elif [ "${opcion}" == "3" ] ; then
-		newFolderForUser
+		newFolderReadOnly
 		restartSamba
 	elif [ "${opcion}" == "4" ] ; then
-		newFolderPrintable
+		newFolderForUser
 		restartSamba
 	elif [ "${opcion}" == "5" ] ; then
+		newFolderPrintable
 		restartSamba
 	elif [ "${opcion}" == "6" ] ; then
-		viewFolders
+		restartSamba
 	elif [ "${opcion}" == "7" ] ; then
-		removeFolder
+		viewFolders
 	elif [ "${opcion}" == "8" ] ; then
-		restoreSmb
+		removeFolder
 	elif [ "${opcion}" == "9" ] ; then
+		restoreSmb
+	elif [ "${opcion}" == "10" ] ; then
 		mostrarMenu=1
 	elif [ -z "${opcion}" ] ; then
 		echo ""

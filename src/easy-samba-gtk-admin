@@ -2,13 +2,13 @@
 
 ##############################################################
 # Crear carpetas compartidas en Linux (GTK)                  #
-# U. Modificacion: 02-06-2018                                #
+# U. Modificacion: 07-06-2018                                #
 # Autor: q3aql                                               #
 # Contacto: q3aql@openmailbox.org                            #
 # Licencia: GPL v2.0                                         #
 ##############################################################
-VERSION="1.4 (GTK)"
-M_DATE="020618"
+VERSION="1.5 (GTK)"
+M_DATE="070618"
 
 # Enlace con gksudo,gksu o bessu a easy-samba-gtk
 function showRootMessage() {
