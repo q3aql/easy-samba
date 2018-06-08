@@ -178,17 +178,17 @@ function addNewFolder() {
   		if [ ${output} -ne 0 ] ; then
   			zenity --title "easy-samba ${VERSION} (${M_DATE})" --error --text "Error: Fallo al agregar la carpeta '${folder}'"
   		else
-        echo "[${endFolder}]" >> ${sambaConfig}
-        echo "# Folder to ${linuxSambaFolder}/${endFolder} # 00bc00" >> ${sambaConfig}
-        echo "path = ${linuxSambaFolder}/${endFolder}" >> ${sambaConfig}
-        echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
-        echo "browseable = yes" >> ${sambaConfig}
-        echo "writeable = yes" >> ${sambaConfig}
-        echo "read only = no" >> ${sambaConfig}
-        echo "guest ok = yes" >> ${sambaConfig}
-        echo "" >> ${sambaConfig}
+        		echo "[${endFolder}]" >> ${sambaConfig}
+        		echo "# Folder to ${linuxSambaFolder}/${endFolder} # 00bc00" >> ${sambaConfig}
+        		echo "path = ${linuxSambaFolder}/${endFolder}" >> ${sambaConfig}
+        		echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
+        		echo "browseable = yes" >> ${sambaConfig}
+        		echo "writeable = yes" >> ${sambaConfig}
+        		echo "read only = no" >> ${sambaConfig}
+        		echo "guest ok = yes" >> ${sambaConfig}
+        		echo "" >> ${sambaConfig}
   			zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --text "Carpeta '${folder}' agregada con exito!"
-  			createFolderLink ${folder}
+  			createFolderLink ${endFolder}
   		fi
     fi
   else
