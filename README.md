@@ -5,9 +5,9 @@ easy-samba - Crea carpetas compartidas con Samba de forma facil
 
   * **Descargas:**
   
-    * [easy-samba-1.5.1.deb](https://github.com/q3aql/easy-samba/releases/download/v1.4/easy-samba-1.5.1.deb)
-    * [easy-samba-1.5.1.rpm](https://github.com/q3aql/easy-samba/releases/download/v1.4/easy-samba-1.5.1.rpm)
-    * [easy-samba-1.5.1.tar.gz](https://github.com/q3aql/easy-samba/releases/download/v1.4/easy-samba-1.5.1.tar.gz)
+    * [easy-samba-1.5.1.deb](https://github.com/q3aql/easy-samba/releases/download/v1.5.1/easy-samba-1.5.1.deb)
+    * [easy-samba-1.5.1.rpm](https://github.com/q3aql/easy-samba/releases/download/v1.5.1/easy-samba-1.5.1.rpm)
+    * [easy-samba-1.5.1.tar.gz](https://github.com/q3aql/easy-samba/releases/download/v1.5.1/easy-samba-1.5.1.tar.gz)
     
 ### Dependencias necesarias:
 
