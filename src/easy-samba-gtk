@@ -2,13 +2,13 @@
 
 ##############################################################
 # Crear carpetas compartidas en Linux (GTK)                  #
-# U. Modificacion: 07-06-2018                                #
+# U. Modificacion: 08-06-2018                                #
 # Autor: q3aql                                               #
 # Contacto: q3aql@openmailbox.org                            #
 # Licencia: GPL v2.0                                         #
 ##############################################################
-VERSION="1.5 (GTK)"
-M_DATE="070618"
+VERSION="1.5.1 (GTK)"
+M_DATE="080618"
 
 # Parametros globales
 linuxSambaFolder="/opt/easy-samba"
