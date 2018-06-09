@@ -67,139 +67,139 @@ function convertText() {
 
 # Funcion para extraer el nombre de la carpeta de una ruta
 function extractFolder() {
-  pathToExtract="${1}/"
-  findFolder=0
-  count=1
-  nameFolder=$(echo ${pathToExtract} | cut -d "/" -f ${count})
-  count=$(expr $count + 1)
-  while [ ${findFolder} -eq 0 ] ; do
-    nameFolderTemp=$(echo ${pathToExtract} | cut -d "/" -f ${count})
-    if [ -z "${nameFolderTemp}" ] ; then
-      findFolder=1
-    else
-      nameFolder="${nameFolderTemp}"
-      count=$(expr $count + 1)
-    fi
-  done
-  echo "${nameFolder}"
+	pathToExtract="${1}/"
+	findFolder=0
+	count=1
+	nameFolder=$(echo ${pathToExtract} | cut -d "/" -f ${count})
+	count=$(expr $count + 1)
+	while [ ${findFolder} -eq 0 ] ; do
+		nameFolderTemp=$(echo ${pathToExtract} | cut -d "/" -f ${count})
+		if [ -z "${nameFolderTemp}" ] ; then
+			findFolder=1
+		else
+			nameFolder="${nameFolderTemp}"
+			count=$(expr $count + 1)
+		fi
+	done
+	echo "${nameFolder}"
 }
 
 # Funcion para crear enlace en el escritorio/home de los usuarios
 # Sintaxis: createFolderLink [carpeta]
 function createFolderLink() {
-echo -n "* Deseas crear un enlace en el escritorio/home para los usuarios locales (s[*]/n): " ; read createLink
-if [ "${createLink}" == "n" ] ; then
-  echo "nule" > /dev/null
-else
-  if [ "$(ls -A ${homeUsers})" ] ; then
-  		cd ${homeUsers}
-  		ls > ${homeUsersList}
-      for userDetected in $(cat ${homeUsersList}) ; do
-          if [ -d ${homeUsers}/${userDetected}/Desktop ] ; then
-            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/Desktop/ 2> /dev/null
-            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
-            output=$?
-          elif [ -d ${homeUsers}/${userDetected}/Escritorio ] ; then
-            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/Escritorio/ 2> /dev/null
-            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
-            output=$?
-          elif [ -d ${homeUsers}/${userDetected}/Escriptori ] ; then
-            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/Escriptori/ 2> /dev/null
-            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
-            output=$?
-          else
-            ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
-            output=$?
-          fi
-  		done
-      if [ ${output} -eq 0 ] ; then
-        echo "* Enlaces creados correctamente!"
-      else
-        echo "* Error: Fallo al crear los enlaces!"
-      fi
-  else
-  	echo "* Usuarios no encontrados en ${homeUsers}"
-  fi
-fi
+	echo -n "* Deseas crear un enlace en el escritorio/home para los usuarios locales (s[*]/n): " ; read createLink
+	if [ "${createLink}" == "n" ] ; then
+		echo "nule" > /dev/null
+	else
+		if [ "$(ls -A ${homeUsers})" ] ; then
+			cd ${homeUsers}
+			ls > ${homeUsersList}
+			for userDetected in $(cat ${homeUsersList}) ; do
+				if [ -d ${homeUsers}/${userDetected}/Desktop ] ; then
+					ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/Desktop/ 2> /dev/null
+					ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
+					output=$?
+				elif [ -d ${homeUsers}/${userDetected}/Escritorio ] ; then
+					ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/Escritorio/ 2> /dev/null
+					ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
+					output=$?
+				elif [ -d ${homeUsers}/${userDetected}/Escriptori ] ; then
+					ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/Escriptori/ 2> /dev/null
+					ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
+					output=$?
+				else
+					ln -s ${linuxSambaFolder}/${1} ${homeUsers}/${userDetected}/ 2> /dev/null
+					output=$?
+				fi
+			done
+			if [ ${output} -eq 0 ] ; then
+				echo "* Enlaces creados correctamente!"
+			else
+				echo "* Error: Fallo al crear los enlaces!"
+			fi
+		else
+			echo "* Usuarios no encontrados en ${homeUsers}"
+		fi
+	fi
 }
 
 # Funcion para borrar los enlaces en el escritorio/home de los usuarios
 # Sintaxis: deleteFolderLink [carpeta]
 function deleteFolderLink() {
-echo -n "* Deseas borrar los enlaces en el escritorio/home de los usuarios locales (s[*]/n): " ; read deleteLink
-if [ "${deleteLink}" == "n" ] ; then
-  echo "nule" > /dev/null
-else
-  if [ "$(ls -A ${homeUsers})" ] ; then
-  		cd ${homeUsers}
-  		ls > ${homeUsersList}
-      for userDetected in $(cat ${homeUsersList}) ; do
-          if [ -d ${homeUsers}/${userDetected}/Desktop ] ; then
-            rm -f ${homeUsers}/${userDetected}/Desktop/${1} 2> /dev/null
-            rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
-            output=$?
-          elif [ -d ${homeUsers}/${userDetected}/Escritorio ] ; then
-            rm -f ${homeUsers}/${userDetected}/Escritorio/${1} 2> /dev/null
-            rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
-            output=$?
-          elif [ -d ${homeUsers}/${userDetected}/Escriptori ] ; then
-            rm -f ${homeUsers}/${userDetected}/Escriptori/${1} 2> /dev/null
-            rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
-            output=$?
-          else
-            rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
-            output=$?
-          fi
-      done
-      if [ ${output} -eq 0 ] ; then
-        echo "* Enlaces borrados correctamente!"
-      else
-        echo "* Error: Fallo al borrar los enlaces!"
-      fi
-  else
-  	echo "* Usuarios no encontrados en ${homeUsers}"
-  fi
-fi
+	echo -n "* Deseas borrar los enlaces en el escritorio/home de los usuarios locales (s[*]/n): " ; read deleteLink
+	if [ "${deleteLink}" == "n" ] ; then
+		echo "nule" > /dev/null
+	else
+		if [ "$(ls -A ${homeUsers})" ] ; then
+			cd ${homeUsers}
+			ls > ${homeUsersList}
+			for userDetected in $(cat ${homeUsersList}) ; do
+				if [ -d ${homeUsers}/${userDetected}/Desktop ] ; then
+					rm -f ${homeUsers}/${userDetected}/Desktop/${1} 2> /dev/null
+					rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
+					output=$?
+				elif [ -d ${homeUsers}/${userDetected}/Escritorio ] ; then
+					rm -f ${homeUsers}/${userDetected}/Escritorio/${1} 2> /dev/null
+					rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
+					output=$?
+				elif [ -d ${homeUsers}/${userDetected}/Escriptori ] ; then
+					rm -f ${homeUsers}/${userDetected}/Escriptori/${1} 2> /dev/null
+					rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
+					output=$?
+				else
+					rm -f ${homeUsers}/${userDetected}/${1} 2> /dev/null
+					output=$?
+				fi
+			done
+			if [ ${output} -eq 0 ] ; then
+				echo "* Enlaces borrados correctamente!"
+			else
+				echo "* Error: Fallo al borrar los enlaces!"
+			fi
+		else
+			echo "* Usuarios no encontrados en ${homeUsers}"
+		fi
+	fi
 }
 
 # Funcion para agregar una carpeta a Samba
 function addNewFolder() {
 	echo ""
 	echo -n "* Introduce la ruta absoluta de la carpeta a agregar: " ; read folder
-  pathExtracted=$(extractFolder "${folder}")
-  endFolder=$(convertText "${pathExtracted}")
+	pathExtracted=$(extractFolder "${folder}")
+	endFolder=$(convertText "${pathExtracted}")
 	if [ -z "${folder}" ] ; then
 		echo "* Debes introducir la ruta absoluta de una carpeta!"
 		echo ""
 		echo -n "* Pulsa INTRO para continuar... " ; read continue
-  elif [ -d "${folder}" ] ; then
-  	if [ -d ${linuxSambaFolder}/${endFolder} ] ; then
-  		echo "* Una carpeta con el mismo nombre ya se encuentra agregada o creada!"
-  		echo ""
-  		echo -n "* Pulsa INTRO para continuar... " ; read continue
-  	else
-  		ln -s "${folder}" ${linuxSambaFolder}/${endFolder} 2> /dev/null
-  		output=$?
-  		if [ ${output} -ne 0 ] ; then
-  			echo "* Error: Fallo al agregar la carpeta '${folder}'"
-  			echo ""
-  			echo -n "* Pulsa INTRO para continuar... " ; read continue
-  		else
-  			echo "[${endFolder}]" >> ${sambaConfig}
-  			echo "# Folder to ${linuxSambaFolder}/${endFolder} # 00bc00" >> ${sambaConfig}
-  			echo "path = ${linuxSambaFolder}/${endFolder}" >> ${sambaConfig}
-  			echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
-  			echo "browseable = yes" >> ${sambaConfig}
-  			echo "writeable = yes" >> ${sambaConfig}
-  			echo "read only = no" >> ${sambaConfig}
-  			echo "guest ok = yes" >> ${sambaConfig}
-  			echo "" >> ${sambaConfig}
-  			echo "* Carpeta '${folder}' agregada con exito!"
-  			createFolderLink ${endFolder}
-  		fi
-    fi
-  else
-    echo "* La carpeta introducida no existe!"
+	elif [ -d "${folder}" ] ; then
+		if [ -d ${linuxSambaFolder}/${endFolder} ] ; then
+			echo "* Una carpeta con el mismo nombre ya se encuentra agregada o creada!"
+			echo ""
+			echo -n "* Pulsa INTRO para continuar... " ; read continue
+		else
+			ln -s "${folder}" ${linuxSambaFolder}/${endFolder} 2> /dev/null
+			output=$?
+			if [ ${output} -ne 0 ] ; then
+				echo "* Error: Fallo al agregar la carpeta '${folder}'"
+				echo ""
+				echo -n "* Pulsa INTRO para continuar... " ; read continue
+			else
+				echo "[${endFolder}]" >> ${sambaConfig}
+				echo "# Folder to ${linuxSambaFolder}/${endFolder} # 00bc00" >> ${sambaConfig}
+				echo "path = ${linuxSambaFolder}/${endFolder}" >> ${sambaConfig}
+				echo "comment = Folder by easy-samba ${VERSION} (${M_DATE})" >> ${sambaConfig}
+				echo "browseable = yes" >> ${sambaConfig}
+				echo "writeable = yes" >> ${sambaConfig}
+				echo "read only = no" >> ${sambaConfig}
+				echo "guest ok = yes" >> ${sambaConfig}
+				echo "" >> ${sambaConfig}
+				echo "* Carpeta '${folder}' agregada con exito!"
+				createFolderLink ${endFolder}
+			fi
+		fi
+	else
+		echo "* La carpeta introducida no existe!"
 		echo ""
 		echo -n "* Pulsa INTRO para continuar... " ; read continue
 	fi
@@ -419,24 +419,24 @@ function restoreSmb() {
 
 # Funcion para mostrar carpetas compartidas
 function viewFolders() {
-  if [ "$(ls -A ${linuxSambaFolder})" ] ; then
+	if [ "$(ls -A ${linuxSambaFolder})" ] ; then
 		cd ${linuxSambaFolder}
-    ls > ${sambaFoldersList}
-    echo ""
-    echo "* Lista de carpetas compartidas disponibles:"
-    echo ""
-    folderList=""
-    for folderDetected in $(cat ${sambaFoldersList}) ; do
-      echo " + ${folderDetected}"
-    done
-    echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
-  else
-    echo ""
-    echo "* Actualmente no hay carpetas compartidas!"
-    echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
-  fi
+		ls > ${sambaFoldersList}
+		echo ""
+		echo "* Lista de carpetas compartidas disponibles:"
+		echo ""
+		folderList=""
+		for folderDetected in $(cat ${sambaFoldersList}) ; do
+			echo " + ${folderDetected}"
+		done
+		echo ""
+		echo -n "* Pulsa INTRO para continuar... " ; read continue
+	else
+		echo ""
+		echo "* Actualmente no hay carpetas compartidas!"
+		echo ""
+		echo -n "* Pulsa INTRO para continuar... " ; read continue
+	fi
 }
 
 # Funcion para borrar una carpeta compartida
@@ -454,29 +454,29 @@ function removeFolder() {
 		if [ ${output} -eq 0 ] ; then
 			readLine=$(cat ${sambaConfig} | grep "# Folder to ${linuxSambaFolder}/${folder} # 00bc00" -n | cut -d ":" -f 1)
 			if [ -z ${readLine} ] ; then
-			  echo "* La carpeta '${folder}' ha sido borrada pero no se ha encontrado en 'smb.conf'"
-			  echo ""
-			  echo -n "* Pulsa INTRO para continuar... " ; read continue
+				echo "* La carpeta '${folder}' ha sido borrada pero no se ha encontrado en 'smb.conf'"
+				echo ""
+				echo -n "* Pulsa INTRO para continuar... " ; read continue
 			else
-			  initLine=$(expr ${readLine} - 1)
-			  endLine=$(expr ${readLine} + 7)
-			  totalLines=$(cat /etc/samba/smb.conf | wc -l)
-			  count=1
-			  mkdir -p /tmp/easy-samba/
-			  echo > /tmp/easy-samba/smb.conf
-			  while [ ${count} -lt $initLine ] ; do
-				cat /etc/samba/smb.conf | head -${count} | tail -1 >> /tmp/easy-samba/smb.conf
-				count=$(expr ${count} + 1)
-			  done
-			  count=$(expr ${endLine} + 1)
-			  while [ ${count} -le ${totalLines} ] ; do
-				cat ${sambaConfig} | head -${count} | tail -1 >> /tmp/easy-samba/smb.conf
-				count=$(expr ${count} + 1)
-			  done
-			  cp -rf /tmp/easy-samba/smb.conf ${sambaConfig}
-			  echo "* La carpeta '${folder} ha sido borrada con exito!"
-			  deleteFolderLink ${folder}
-			  restartSamba
+				initLine=$(expr ${readLine} - 1)
+				endLine=$(expr ${readLine} + 7)
+				totalLines=$(cat /etc/samba/smb.conf | wc -l)
+				count=1
+				mkdir -p /tmp/easy-samba/
+				echo > /tmp/easy-samba/smb.conf
+				while [ ${count} -lt $initLine ] ; do
+					cat /etc/samba/smb.conf | head -${count} | tail -1 >> /tmp/easy-samba/smb.conf
+					count=$(expr ${count} + 1)
+				done
+				count=$(expr ${endLine} + 1)
+				while [ ${count} -le ${totalLines} ] ; do
+					cat ${sambaConfig} | head -${count} | tail -1 >> /tmp/easy-samba/smb.conf
+					count=$(expr ${count} + 1)
+				done
+				cp -rf /tmp/easy-samba/smb.conf ${sambaConfig}
+				echo "* La carpeta '${folder} ha sido borrada con exito!"
+				deleteFolderLink ${folder}
+				restartSamba
 			fi
 		else
 			echo "* Error: No se ha podido borrar la carpeta '${folder}'"
