@@ -332,6 +332,15 @@ function newFolderPrintable() {
 	fi
 }
 
+# Funcion de reinicio de samba
+function reiniciandoSamba() {
+	sleep 2
+	/etc/init.d/samba restart &> /dev/null
+	systemctl restart smbd.service 2> /dev/null
+	systemctl restart nmbd.service 2> /dev/null
+	systemctl restart smb.service 2> /dev/null
+}
+
 # Funcion para reiniciar el servicio de Samba
 function restartSamba() {
 	zenity --question --title "easy-samba ${VERSION} (${M_DATE})" --cancel-label="No" --ok-label="Si" --width=320 --text "Deseas reiniciar los servicios de Samba?"
@@ -339,11 +348,7 @@ function restartSamba() {
 	if [ "${sambaSN}" == "1" ] ; then
 		echo "nule" > /dev/null
 	else
-		sleep 4 | zenity --progress --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Reiniciando servicios de Samba"
-		/etc/init.d/samba restart &> /dev/null
-		systemctl restart smbd.service 2> /dev/null
-		systemctl restart nmbd.service 2> /dev/null
-		systemctl restart smb.service 2> /dev/null
+		reiniciandoSamba | zenity --progress --pulsate --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Reiniciando servicios de Samba"
 		zenity --title "easy-samba ${VERSION} (${M_DATE})" --info --width=300 --text "Servicios de Samba reiniciados"
 	fi
 }
@@ -355,8 +360,8 @@ function restoreSmb() {
 	--text "Nota: Se van a eliminar todas las carpetas compartidas y su contenido\n\nImportante: Se volvera al estado inicial del fichero 'smb.conf' antes de\nde ejecutar 'easy-samba' por primera vez\n\nDeseas continuar?"
 	deleteFolder=$?
 	if [ ${deleteFolder} -eq 0 ] ; then
-		sleep 3 | zenity --progress --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Borrando carpetas"
-		rm -rf ${linuxSambaFolder}/* | zenity --progress --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Finalizando proceso de borrado"
+		sleep 2 | zenity --progress --pulsate --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Borrando carpetas"
+		rm -rf ${linuxSambaFolder}/* | zenity --progress --pulsate --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Finalizando proceso de borrado"
 		output=$?
 		if [ ${output} -eq 0 ] ; then
 			cp -rf ${sambaBackup} ${sambaConfig} 2> /dev/null
@@ -408,7 +413,7 @@ function removeFolder() {
 		if [ -z ${folder} ] ; then
 			zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --width=350 --text "Debes seleccionar una carpeta de la lista"
 		elif [ -d ${linuxSambaFolder}/${folder} ] ; then
-			sleep 2 | zenity --progress --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Borrando carpeta..."
+			sleep 2 | zenity --progress --pulsate --title "easy-samba ${VERSION} (${M_DATE})" --auto-close --text "Borrando carpeta..."
 			rm -rf ${linuxSambaFolder}/${folder} 2> /dev/null
 			output=$?
 			if [ ${output} -eq 0 ] ; then
