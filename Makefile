@@ -1,5 +1,5 @@
 #################################################
-# Instalar easy-samba 1.5.2 (q3aql)               #
+# Instalar easy-samba 1.6 (q3aql)               #
 #################################################
 
 PREFIX=/usr
@@ -15,7 +15,7 @@ install:
 	chmod 755 $(PREFIX)/bin/easy-samba
 	chmod 755 $(PREFIX)/bin/easy-samba-gtk
 	chmod 755 $(PREFIX)/bin/easy-samba-gtk-admin
-	
+
 uninstall:
 	rm -rf $(PREFIX)/bin/easy-samba
 	rm -rf $(PREFIX)/bin/easy-samba-gtk
