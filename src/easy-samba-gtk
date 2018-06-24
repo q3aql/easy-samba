@@ -447,17 +447,24 @@ function removeFolder() {
 	fi
 }
 
+# Funcion para mostrar el "acerca" del programa
+function mostrarAcerca() {
+  zenity --title "Acerca" --info --width=330 \
+  --text "Software: easy-samba ${VERSION} (${M_DATE})\nAutor: q3aql\nContacto: q3aql@openmailbox.org\nLicencia: GPL v2.0"
+}
+
 # Mostrar menu con todas las opciones
 mostrarMenu=0
 #rootMessage
 backupSmbConf
 while [ ${mostrarMenu} -eq 0 ] ; do
 	clear
-	opcion=$(zenity --width=390 --height=380 --list --title "easy-samba ${VERSION} ($M_DATE)" \
+	opcion=$(zenity --width=390 --height=400 --list --title "easy-samba ${VERSION} ($M_DATE)" \
 	--column "Selecciona una opcion:" "Agregar carpeta a Samba" "Crear carpeta compartida" \
 	"Crear carpeta compartida (solo lectura)" "Crear carpeta compartida (para un usuario)" \
 	"Crear carpeta compartida (printable)" "Reiniciar servicios de Samba" \
-	"Ver carpetas compartidas disponibles" "Borrar carpeta compartida" "Restaurar smb.conf" "Salir")
+	"Ver carpetas compartidas disponibles" "Borrar carpeta compartida" "Restaurar smb.conf" \
+	"Acerca" "Salir")
 	if [ "${opcion}" == "Agregar carpeta a Samba" ] ; then
 		addNewFolder
 		restartSamba
@@ -481,6 +488,8 @@ while [ ${mostrarMenu} -eq 0 ] ; do
 		removeFolder
 	elif [ "${opcion}" == "Restaurar smb.conf" ] ; then
 		restoreSmb
+	elif [ "${opcion}" == "Acerca" ] ; then
+		mostrarAcerca
 	elif [ "${opcion}" == "Salir" ] ; then
 		mostrarMenu=1
 	else

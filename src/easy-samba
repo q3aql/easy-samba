@@ -494,6 +494,19 @@ function removeFolder() {
 	fi
 }
 
+# Funcion para mostrar el "acerca" del programa
+function mostrarAcerca() {
+	echo ""
+	echo "* Acerca:"
+	echo ""
+	echo " - Software: easy-samba ${VERSION} (${M_DATE})"
+	echo " - Autor: q3aql"
+	echo " - Contacto: q3aql@openmailbox.org"
+	echo " - Licencia: GPL v2.0"
+	echo ""
+	echo -n "* Pulsa INTRO para continuar... " ; read continue
+}
+
 # Mostrar menu con todas las opciones
 mostrarMenu=0
 rootMessage
@@ -503,17 +516,18 @@ while [ ${mostrarMenu} -eq 0 ] ; do
 	echo ""
 	echo "* easy-samba ${VERSION} (${M_DATE})"
 	echo ""
-	echo " 1 - Agregar carpeta a Samba"
-	echo " 2 - Crear carpeta compartida"
-	echo " 3 - Crear carpeta compartida (solo lectura)"
-	echo " 4 - Crear carpeta compartida (para un usuario)"
-	echo " 5 - Crear carpeta compartida (printable)"
-	echo " 6 - Reiniciar servicios de Samba"
-	echo " 7 - Ver carpetas compartidas disponibles"
-	echo " 8 - Borrar carpeta compartida"
-	echo " 9 - Restaurar smb.conf"
+	echo " 1  - Agregar carpeta a Samba"
+	echo " 2  - Crear carpeta compartida"
+	echo " 3  - Crear carpeta compartida (solo lectura)"
+	echo " 4  - Crear carpeta compartida (para un usuario)"
+	echo " 5  - Crear carpeta compartida (printable)"
+	echo " 6  - Reiniciar servicios de Samba"
+	echo " 7  - Ver carpetas compartidas disponibles"
+	echo " 8  - Borrar carpeta compartida"
+	echo " 9  - Restaurar smb.conf"
+	echo " 10 - Acerca"
 	echo ""
-	echo " 10 - Salir"
+	echo " 11 - Salir"
 	echo ""
 	echo -n " * Elige una opcion: " ; read opcion
 	if [ "${opcion}" == "1" ] ; then
@@ -540,6 +554,8 @@ while [ ${mostrarMenu} -eq 0 ] ; do
 	elif [ "${opcion}" == "9" ] ; then
 		restoreSmb
 	elif [ "${opcion}" == "10" ] ; then
+		mostrarAcerca
+	elif [ "${opcion}" == "11" ] ; then
 		mostrarMenu=1
 	elif [ -z "${opcion}" ] ; then
 		echo ""
