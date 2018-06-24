@@ -162,6 +162,19 @@ function deleteFolderLink() {
 	fi
 }
 
+# Funcion para corregir los permisos en la home de un usuario
+# Sintaxis: fixHomePermissions <directorio>
+function fixHomePermissions() {
+	homeFolder="${1}"
+	checkHomeFolder=$(echo ${homeFolder} | grep "/home")
+	if [ -z ${checkHomeFolder} ] ; then
+		echo "null" > /dev/null
+	else
+		userFolder=$(echo ${homeFolder} | cut -d "/" -f 3)
+		chmod o+rx "/home/${userFolder}"
+	fi
+}
+
 # Funcion para agregar una carpeta a Samba
 function addNewFolder() {
 	echo ""
@@ -178,6 +191,7 @@ function addNewFolder() {
 			echo ""
 			echo -n "* Pulsa INTRO para continuar... " ; read continue
 		else
+			fixHomePermissions "${folder}"
 			ln -s "${folder}" ${linuxSambaFolder}/${endFolder} 2> /dev/null
 			output=$?
 			if [ ${output} -ne 0 ] ; then
