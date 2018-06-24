@@ -4,16 +4,17 @@ easy-samba - Crea carpetas compartidas con Samba de forma facil
 ### Paquetes de easy-samba 1.5.2:
 
   * **Descargas:**
-  
+
     * [easy-samba-1.5.2.deb](https://github.com/q3aql/easy-samba/releases/download/v1.5.2/easy-samba-1.5.2.deb)
     * [easy-samba-1.5.2.rpm](https://github.com/q3aql/easy-samba/releases/download/v1.5.2/easy-samba-1.5.2.rpm)
     * [easy-samba-1.5.2.tar.gz](https://github.com/q3aql/easy-samba/releases/download/v1.5.2/easy-samba-1.5.2.tar.gz)
-    
+
 ### Dependencias necesarias:
 
   * zenity
   * samba
-  * beesu (en Fedora)
+  * xterm
+  * beesu (en Fedora) (opcional)
   * sed
 
 ### Como instalarlo:
@@ -32,7 +33,7 @@ easy-samba - Crea carpetas compartidas con Samba de forma facil
     * Instala las dependencias con el gestor de paquetes.
     * Desplazate donde se encuentra el paquete y descomprimelo: `tar zxvf easy-samba-1.5.2.tar.gz`
     * Instalalo con el comando: `cd easy-samba-1.5.2 && sudo make install`
-  
+
 ### Enlaces externos:
 
   * [Zenity](https://gitlab.gnome.org/GNOME/zenity)
