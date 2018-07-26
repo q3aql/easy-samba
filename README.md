@@ -1,13 +1,13 @@
 easy-samba - Crea carpetas compartidas con Samba de forma facil
 ===============================================================
 
-### Paquetes de easy-samba 1.6:
+### Paquetes de easy-samba 1.6.1:
 
   * **Descargas:**
 
-    * [easy-samba-1.6.deb](https://github.com/q3aql/easy-samba/releases/download/v1.6/easy-samba-1.6.deb)
-    * [easy-samba-1.6.rpm](https://github.com/q3aql/easy-samba/releases/download/v1.6/easy-samba-1.6.rpm)
-    * [easy-samba-1.6.tar.gz](https://github.com/q3aql/easy-samba/releases/download/v1.6/easy-samba-1.6.tar.gz)
+    * [easy-samba-1.6.1.deb](https://github.com/q3aql/easy-samba/releases/download/v1.6.1/easy-samba-1.6.1.deb)
+    * [easy-samba-1.6.1.rpm](https://github.com/q3aql/easy-samba/releases/download/v1.6.1/easy-samba-1.6.1.rpm)
+    * [easy-samba-1.6.1.tar.gz](https://github.com/q3aql/easy-samba/releases/download/v1.6.1/easy-samba-1.6.1.tar.gz)
 
 ### Dependencias necesarias:
 
@@ -21,18 +21,18 @@ easy-samba - Crea carpetas compartidas con Samba de forma facil
 
   * **Ubuntu/Debian:**
     * Descarga el paquete ".deb" y abre la terminal.
-    * Desplazate donde se encuentra el paquete y escribe: `sudo gdebi easy-samba-1.6.deb`
+    * Desplazate donde se encuentra el paquete y escribe: `sudo gdebi easy-samba-1.6.1.deb`
 
   * **Fedora:**
     * Descarga el paquete ".rpm" y abre la terminal.
     * Instala las dependencias con el comando: `sudo dnf install zenity beesu samba sed`
-    * Desplazate donde se encuentra el paquete y escribe: `sudo rpm -i --force easy-samba-1.6.rpm`
+    * Desplazate donde se encuentra el paquete y escribe: `sudo rpm -i --force easy-samba-1.6.1.rpm`
 
   * **Otras distribuciones:**
     * Descarga el paquete ".tar.gz" y abre la terminal.
     * Instala las dependencias con el gestor de paquetes.
-    * Desplazate donde se encuentra el paquete y descomprimelo: `tar zxvf easy-samba-1.6.tar.gz`
-    * Instalalo con el comando: `cd easy-samba-1.6 && sudo make install`
+    * Desplazate donde se encuentra el paquete y descomprimelo: `tar zxvf easy-samba-1.6.1.tar.gz`
+    * Instalalo con el comando: `cd easy-samba-1.6.1 && sudo make install`
 
 ### Enlaces externos:
 
