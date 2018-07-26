@@ -2,13 +2,13 @@
 
 ##############################################################
 # Crear carpetas compartidas en Linux (GTK)                  #
-# U. Modificacion: 24-06-2018                                #
+# U. Modificacion: 26-07-2018                                #
 # Autor: q3aql                                               #
 # Contacto: q3aql@openmailbox.org                            #
 # Licencia: GPL v2.0                                         #
 ##############################################################
 VERSION="1.6 (GTK)"
-M_DATE="240618"
+M_DATE="260718"
 
 # Enlace con gksudo,gksu o bessu a easy-samba-gtk
 function showRootMessage() {
@@ -31,16 +31,16 @@ function showRootMessage() {
 		beesu /usr/bin/easy-samba-gtk
 		exit
 	elif [ -f /bin/sudo ] ; then
-		xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -e "sudo easy-samba-gtk"
+		xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -bg white -fg black -e "sudo easy-samba-gtk"
 		exit
 	elif [ -f /usr/bin/sudo ] ; then
-		xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -e "sudo easy-samba-gtk"
+		xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -bg white -fg black -e "sudo easy-samba-gtk"
 		exit
 	elif [ -f /usr/bin/su ] ; then
-		xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -e "su -c 'easy-samba-gtk'"
+		xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -bg white -fg black -e "su -c 'easy-samba-gtk'"
 		exit
 	elif [ -f /bin/su ] ; then
-		xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -e "su -c 'easy-samba-gtk'"
+		xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -bg white -fg black -e "su -c 'easy-samba-gtk'"
 		exit
 	else
 		zenity -h &> /dev/null
@@ -49,7 +49,7 @@ function showRootMessage() {
 			zenity --title "easy-samba ${VERSION} (${M_DATE})" --info \
 			--text "El programa 'easy-samba-gtk' no ha podido ser ejecutado como administrador\n\nPorfavor, ejecuta el comando 'easy-samba-gtk' como usuario root en la terminal"
 		else
-			xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -e "easy-samba-gtk-admin --error"
+			xterm -T "easy-samba ${VERSION} (${M_DATE})" -fa Monospace -fs 10 -bg white -fg black -e "easy-samba-gtk-admin --error"
 		fi
 	fi
 }

@@ -2,13 +2,13 @@
 
 ##############################################################
 # Crear carpetas compartidas en Linux (GTK)                  #
-# U. Modificacion: 24-06-2018                                #
+# U. Modificacion: 26-07-2018                                #
 # Autor: q3aql                                               #
 # Contacto: q3aql@openmailbox.org                            #
 # Licencia: GPL v2.0                                         #
 ##############################################################
 VERSION="1.6 (GTK)"
-M_DATE="240618"
+M_DATE="260718"
 
 # Parametros globales
 linuxSambaFolder="/opt/easy-samba"
@@ -19,10 +19,22 @@ homeUsersList="/tmp/easy-samba-users.list"
 sambaFoldersList="/tmp/easy-samba-folders.list"
 sambaSedFolder="/tmp/easy-samba/word/"
 
-# Mostrar aviso de usuario de usuario root
-#function rootMessage() {
-#	zenity --title "easy-samba ${VERSION} (${M_DATE})" --warning --text "Nota: Recuerda haber ejecutado como root!"
-#}
+# Funcion para comprobar permisos de administrador
+function rootMessage() {
+  mkdir -p /etc/root &> /dev/null
+  administrador=$?
+  if [ ${administrador} -eq 0 ] ; then
+    rm -rf /etc/root
+  else
+		zenity --title "easy-samba-gtk ${VERSION} (${M_DATE})" --warning --width=340 --text "Son necesarios permisos de administrador"
+    echo ""
+    echo "* easy-samba-gtk ${VERSION} (${M_DATE}) (GPL v2.0)"
+    echo ""
+    echo "* Son necesarios permisos de administrador"
+    echo ""
+    exit
+  fi
+}
 
 # Funcion para realizar copia del fichero smb.conf original
 function backupSmbConf() {
@@ -474,7 +486,7 @@ function mostrarAcerca() {
 
 # Mostrar menu con todas las opciones
 mostrarMenu=0
-#rootMessage
+rootMessage
 backupSmbConf
 while [ ${mostrarMenu} -eq 0 ] ; do
 	clear
