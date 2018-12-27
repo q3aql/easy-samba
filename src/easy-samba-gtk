@@ -482,7 +482,7 @@ function removeFolder() {
 # Funcion para mostrar el "acerca" del programa
 function mostrarAcerca() {
   zenity --title "Acerca" --info --width=330 \
-  --text "Software: easy-samba ${VERSION} (${M_DATE})\nAutor: q3aql\nContacto: q3aql@openmailbox.org\nLicencia: GPL v2.0"
+  --text "Software: easy-samba ${VERSION} (${M_DATE})\nAutor: q3aql\nContacto: q3aql@protonmail.ch\nLicencia: GPL v2.0"
 }
 
 # Mostrar menu con todas las opciones

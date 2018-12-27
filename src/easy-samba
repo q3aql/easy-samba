@@ -524,7 +524,7 @@ function mostrarAcerca() {
   echo ""
   echo " - Software: easy-samba ${VERSION} (${M_DATE})"
   echo " - Autor: q3aql"
-  echo " - Contacto: q3aql@openmailbox.org"
+  echo " - Contacto: q3aql@protonmail.ch"
   echo " - Licencia: GPL v2.0"
   echo ""
   echo -n "* Pulsa INTRO para continuar... " ; read continue
