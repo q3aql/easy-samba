@@ -2,13 +2,13 @@
 
 ##############################################################
 # Crear carpetas compartidas en Linux                        #
-# U. Modificacion: 26-07-2018                                #
+# U. Modificacion: 27-12-2018                                #
 # Autor: q3aql                                               #
-# Contacto: q3aql@openmailbox.org                            #
+# Contacto: q3aql@protonmail.ch                              #
 # Licencia: GPL v2.0                                         #
 ##############################################################
-VERSION="1.6.1"
-M_DATE="260718"
+VERSION="1.6.2"
+M_DATE="271218"
 
 # Parametros globales
 linuxSambaFolder="/opt/easy-samba"
@@ -337,6 +337,7 @@ function newFolderForUser() {
         echo -n "* Pulsa INTRO para continuar... " ; read continue
       else
         chmod 755 -R ${linuxSambaFolder}/${folder}
+        chown ${forUser} -R ${linuxSambaFolder}/${folder}
         echo "[${folder}]" >> ${sambaConfig}
         echo "# Folder to ${linuxSambaFolder}/${folder} # 00bc00" >> ${sambaConfig}
         echo "path = ${linuxSambaFolder}/${folder}" >> ${sambaConfig}
