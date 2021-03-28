@@ -2,11 +2,11 @@ easy-samba - A basic GTK (zenity) or CLI interface to create, add and remove fol
 ==============================================================================================
 
 ### Downloads:
-  * [easy-samba-1.6.2.tar.gz](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2.tar.gz) - Generic package (English + Spanish Languages).
-  * [easy-samba-1.6.2-en.deb](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2-en.deb) - Debian based package (English version).
-  * [easy-samba-1.6.2-en.rpm](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2-en.rpm) - RedHat/Fedora based package (English version).
-  * [easy-samba-1.6.2-es.deb](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2-es.deb) - Debian based package (Spanish version).
-  * [easy-samba-1.6.2-es.rpm](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2-es.rpm) - RedHat/Fedora based package (Spanish version).
+  * [easy-samba-1.6.2.tar.gz](https://github.com/q3aql/easy-samba/releases/download/v1.6.2/easy-samba-1.6.2.tar.gz) - Generic package (English + Spanish Languages).
+  * [easy-samba-1.6.2-en.deb](https://github.com/q3aql/easy-samba/releases/download/v1.6.2/easy-samba-1.6.2-en.deb) - Debian based package (English version).
+  * [easy-samba-1.6.2-en.rpm](https://github.com/q3aql/easy-samba/releases/download/v1.6.2/easy-samba-1.6.2-en.rpm) - RedHat/Fedora based package (English version).
+  * [easy-samba-1.6.2-es.deb](https://github.com/q3aql/easy-samba/releases/download/v1.6.2/easy-samba-1.6.2-es.deb) - Debian based package (Spanish version).
+  * [easy-samba-1.6.2-es.rpm](https://github.com/q3aql/easy-samba/releases/download/v1.6.2/easy-samba-1.6.2-es.rpm) - RedHat/Fedora based package (Spanish version).
   
 _Dependencies: samba, bash, coreutils, zenity, xterm, grep, sed_
 
