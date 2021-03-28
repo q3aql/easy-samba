@@ -1,41 +1,59 @@
-easy-samba - Crea carpetas compartidas con Samba de forma facil
-===============================================================
+easy-samba - A basic GTK (zenity) or CLI interface to create, add and remove folders in Samba.
+==============================================================================================
 
-### Paquetes de easy-samba 1.6.2:
+### Downloads:
+  * [easy-samba-1.6.2.tar.gz](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2.tar.gz) - Generic package (English + Spanish Languages).
+  * [easy-samba-1.6.2-en.deb](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2-en.deb) - Debian based package (English version).
+  * [easy-samba-1.6.2-en.rpm](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2-en.rpm) - RedHat/Fedora based package (English version).
+  * [easy-samba-1.6.2-es.deb](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2-es.deb) - Debian based package (Spanish version).
+  * [easy-samba-1.6.2-es.rpm](https://github.com/q3aql/zenigrub-custom/releases/download/v1.6.2/easy-samba-1.6.2-es.rpm) - RedHat/Fedora based package (Spanish version).
+  
+_Dependencies: samba, bash, coreutils, zenity, xterm, grep, sed_
 
-  * **Descargas:**
+### Installation (Generic package - English version):
 
-    * [easy-samba-1.6.2.deb](https://github.com/q3aql/easy-samba/releases/download/v1.6.2/easy-samba-1.6.2.deb)
-    * [easy-samba-1.6.2.rpm](https://github.com/q3aql/easy-samba/releases/download/v1.6.2/easy-samba-1.6.2.rpm)
-    * [easy-samba-1.6.2.tar.gz](https://github.com/q3aql/easy-samba/releases/download/v1.6.2/easy-samba-1.6.2.tar.gz)
+  * Open terminal and run the following commands:
 
-### Dependencias necesarias:
+	```shell
+	$ tar zxvf easy-samba-1.6.2.tar.gz
+	$ cd easy-samba
+	$ sudo make install
+	```
 
-  * zenity
-  * samba
-  * xterm
-  * beesu (en Fedora) (opcional)
-  * sed
+### Installation (Generic package - Spanish version):
 
-### Como instalarlo:
+  * Open terminal and run the following commands:
 
-  * **Ubuntu/Debian:**
-    * Descarga el paquete ".deb" y abre la terminal.
-    * Desplazate donde se encuentra el paquete y escribe: `sudo gdebi easy-samba-1.6.2.deb`
+	```shell
+	$ tar zxvf easy-samba-1.6.2.tar.gz
+	$ cd easy-samba
+	$ sudo make install-es
+	```
+  
+### How to use:
 
-  * **Fedora:**
-    * Descarga el paquete ".rpm" y abre la terminal.
-    * Instala las dependencias con el comando: `sudo dnf install zenity beesu samba sed`
-    * Desplazate donde se encuentra el paquete y escribe: `sudo rpm -i --force easy-samba-1.6.2.rpm`
+  * For `GTK (Zenity) interface`, you should open Menu > Accessories > Easy-Samba or run the following command:
 
-  * **Otras distribuciones:**
-    * Descarga el paquete ".tar.gz" y abre la terminal.
-    * Instala las dependencias con el gestor de paquetes.
-    * Desplazate donde se encuentra el paquete y descomprimelo: `tar zxvf easy-samba-1.6.2.tar.gz`
-    * Instalalo con el comando: `cd easy-samba-1.6.2 && sudo make install`
+	```shell
+	$ sudo easy-samba-gtk
+	```
+  
+  * For `CLI interface`, you run the following command:
 
-### Enlaces externos:
+	```shell
+	$ sudo easy-samba
+	```
 
-  * [Zenity](https://gitlab.gnome.org/GNOME/zenity)
+### Images (Screenshots)
+
+<img src="https://raw.githubusercontent.com/q3aql/easy-samba/master/img/easy-samba-image.png" width="850" />
+
+### External links:
+
   * [Samba](https://www.samba.org/)
-  * [Sed](https://www.gnu.org/software/sed/)
+  * [zenity homepage](https://wiki.gnome.org/Projects/Zenity)
+  * [xterm homepage](https://invisible-island.net/xterm/)
+  * [Coreutils homepage](https://www.gnu.org/software/coreutils/coreutils.html)
+  * [Bash homepage](https://www.gnu.org/software/bash/)
+  * [Grep homepage](https://www.gnu.org/software/grep/)
+  * [sed homepage](https://www.gnu.org/software/sed/)
