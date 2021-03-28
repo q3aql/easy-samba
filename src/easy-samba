@@ -2,13 +2,13 @@
 
 ##############################################################
 # Crear carpetas compartidas en Linux                        #
-# U. Modificacion: 27-12-2018                                #
+# U. Modificacion: 28-03-2021                                #
 # Autor: q3aql                                               #
 # Contacto: q3aql@protonmail.ch                              #
 # Licencia: GPL v2.0                                         #
 ##############################################################
 VERSION="1.6.2"
-M_DATE="271218"
+M_DATE="280321"
 
 # Parametros globales
 linuxSambaFolder="/opt/easy-samba"
@@ -29,7 +29,7 @@ function rootMessage() {
     echo ""
     echo "* easy-samba ${VERSION} (${M_DATE}) (GPL v2.0)"
     echo ""
-    echo "* Son necesarios permisos de administrador"
+    echo "* Administrator permissions are required"
     echo ""
     exit
   fi
@@ -95,7 +95,7 @@ function extractFolder() {
 # Funcion para crear enlace en el escritorio/home de los usuarios
 # Sintaxis: createFolderLink [carpeta]
 function createFolderLink() {
-  echo -n "* Deseas crear un enlace en el escritorio/home para los usuarios locales (s[*]/n): " ; read createLink
+  echo -n "* Do you want to create a link on the desktop/home for local users (y[*]/n): " ; read createLink
   if [ "${createLink}" == "n" ] ; then
     echo "nule" > /dev/null
   else
@@ -121,12 +121,12 @@ function createFolderLink() {
         fi
       done
       if [ ${output} -eq 0 ] ; then
-        echo "* Enlaces creados correctamente!"
+        echo "* Links created successfully!"
       else
-        echo "* Error: Fallo al crear los enlaces!"
+        echo "* Error: Failed to create links!"
       fi
     else
-      echo "* Usuarios no encontrados en ${homeUsers}"
+      echo "* Users not found in ${homeUsers}"
     fi
   fi
 }
@@ -134,7 +134,7 @@ function createFolderLink() {
 # Funcion para borrar los enlaces en el escritorio/home de los usuarios
 # Sintaxis: deleteFolderLink [carpeta]
 function deleteFolderLink() {
-  echo -n "* Deseas borrar los enlaces en el escritorio/home de los usuarios locales (s[*]/n): " ; read deleteLink
+  echo -n "* Do you want to delete the links on the desktop/home of local users (y[*]/n): " ; read deleteLink
   if [ "${deleteLink}" == "n" ] ; then
     echo "nule" > /dev/null
   else
@@ -160,12 +160,12 @@ function deleteFolderLink() {
         fi
       done
       if [ ${output} -eq 0 ] ; then
-        echo "* Enlaces borrados correctamente!"
+        echo "* Links deleted successfully!"
       else
-        echo "* Error: Fallo al borrar los enlaces!"
+        echo "* Error: Failed to delete links!"
       fi
     else
-      echo "* Usuarios no encontrados en ${homeUsers}"
+      echo "* Users not found in ${homeUsers}"
     fi
   fi
 }
@@ -186,26 +186,26 @@ function fixHomePermissions() {
 # Funcion para agregar una carpeta a Samba
 function addNewFolder() {
   echo ""
-  echo -n "* Introduce la ruta absoluta de la carpeta a agregar: " ; read folder
+  echo -n "* Enter the absolute path of the folder to add: " ; read folder
   pathExtracted=$(extractFolder "${folder}")
   endFolder=$(convertText "${pathExtracted}")
   if [ -z "${folder}" ] ; then
-    echo "* Debes introducir la ruta absoluta de una carpeta!"
+    echo "* You must enter the absolute path of a folder!"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   elif [ -d "${folder}" ] ; then
     if [ -d ${linuxSambaFolder}/${endFolder} ] ; then
-      echo "* Una carpeta con el mismo nombre ya se encuentra agregada o creada!"
+      echo "* A folder with the same name is already added or created!"
       echo ""
-      echo -n "* Pulsa INTRO para continuar... " ; read continue
+      echo -n "* Press ENTER to continue... " ; read continue
     else
       fixHomePermissions "${folder}"
       ln -s "${folder}" ${linuxSambaFolder}/${endFolder} 2> /dev/null
       output=$?
       if [ ${output} -ne 0 ] ; then
-        echo "* Error: Fallo al agregar la carpeta '${folder}'"
+        echo "* Error: Failed to add folder '${folder}'"
         echo ""
-        echo -n "* Pulsa INTRO para continuar... " ; read continue
+        echo -n "* Press ENTER to continue... " ; read continue
       else
         echo "[${endFolder}]" >> ${sambaConfig}
         echo "# Folder to ${linuxSambaFolder}/${endFolder} # 00bc00" >> ${sambaConfig}
@@ -216,38 +216,38 @@ function addNewFolder() {
         echo "read only = no" >> ${sambaConfig}
         echo "guest ok = yes" >> ${sambaConfig}
         echo "" >> ${sambaConfig}
-        echo "* Carpeta '${folder}' agregada con exito!"
+        echo "* Folder '${folder}' added successfully!"
         createFolderLink ${endFolder}
       fi
     fi
   else
-    echo "* La carpeta introducida no existe!"
+    echo "* The inserted folder does not exist!"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   fi
 }
 
 # Funcion para crear carpeta compartida con acceso para todos
 function newFolderEveryone() {
   echo ""
-  echo -n "* Introduce el nombre de la carpeta que deseas crear (sin acentos): " ; read folder
+  echo -n "* Enter the name of the folder you want to create (without accents): " ; read folder
   formatText=$(convertText "${folder}")
   folder=${formatText}
   if [ -z ${folder} ] ; then
-    echo "* Debes introducir un nombre de carpeta!"
+    echo "* You must enter a folder name!"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   elif [ -d ${linuxSambaFolder}/${folder} ] ; then
-    echo "* La carpeta '${folder}' ya está creada, elige otro nombre"
+    echo "* The folder '${folder}' is already created, choose another name"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   else
     mkdir -p ${linuxSambaFolder}/${folder} 2> /dev/null
     output=$?
     if [ ${output} -ne 0 ] ; then
-      echo "* Error: Fallo al crear la carpeta compartida '${folder}'"
+      echo "* Error: Failed to create shared folder '${folder}'"
       echo ""
-      echo -n "* Pulsa INTRO para continuar... " ; read continue
+      echo -n "* Press ENTER to continue... " ; read continue
     else
       chmod 777 -R ${linuxSambaFolder}/${folder}
       echo "[${folder}]" >> ${sambaConfig}
@@ -259,7 +259,7 @@ function newFolderEveryone() {
       echo "read only = no" >> ${sambaConfig}
       echo "guest ok = yes" >> ${sambaConfig}
       echo "" >> ${sambaConfig}
-      echo "* Carpeta compartida '${folder}' creada con exito!"
+      echo "* Shared folder '${folder}' created successfully!"
       createFolderLink ${folder}
     fi
   fi
@@ -268,24 +268,24 @@ function newFolderEveryone() {
 # Funcion para crear carpeta compartida de solo lectura
 function newFolderReadOnly() {
   echo ""
-  echo -n "* Introduce el nombre de la carpeta que deseas crear (sin acentos): " ; read folder
+  echo -n "* Enter the name of the folder you want to create (without accents): " ; read folder
   formatText=$(convertText "${folder}")
   folder=${formatText}
   if [ -z ${folder} ] ; then
-    echo "* Debes introducir un nombre de carpeta!"
+    echo "* You must enter a folder name!"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   elif [ -d ${linuxSambaFolder}/${folder} ] ; then
-    echo "* La carpeta '${folder}' ya está creada, elige otro nombre"
+    echo "* The folder '${folder}' is already created, choose another name"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   else
     mkdir -p ${linuxSambaFolder}/${folder} 2> /dev/null
     output=$?
     if [ ${output} -ne 0 ] ; then
-      echo "* Error: Fallo al crear la carpeta compartida '${folder}'"
+      echo "* Error: Failed to create shared folder '${folder}'"
       echo ""
-      echo -n "* Pulsa INTRO para continuar... " ; read continue
+      echo -n "* Press ENTER to continue... " ; read continue
     else
       chmod 777 -R ${linuxSambaFolder}/${folder}
       echo "[${folder}]" >> ${sambaConfig}
@@ -297,7 +297,7 @@ function newFolderReadOnly() {
       echo "read only = yes" >> ${sambaConfig}
       echo "guest ok = yes" >> ${sambaConfig}
       echo "" >> ${sambaConfig}
-      echo "* Carpeta compartida '${folder}' (solo lectura) creada con exito!"
+      echo "* Shared folder '${folder}' (read only) created succesfully!"
       createFolderLink ${folder}
     fi
   fi
@@ -306,35 +306,35 @@ function newFolderReadOnly() {
 # Crear carpeta compartida para un usuario
 function newFolderForUser() {
   echo ""
-  echo -n "* Introduce el nombre de la carpeta que deseas crear (sin acentos): " ; read folder
+  echo -n "* Enter the name of the folder you want to create (without accents): " ; read folder
   formatText=$(convertText "${folder}")
   folder=${formatText}
   if [ -z ${folder} ] ; then
-    echo "* Debes introducir un nombre de carpeta!"
+    echo "* You must enter a folder name!"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   elif [ -d ${linuxSambaFolder}/${folder} ] ; then
-    echo "* La carpeta '${folder}' ya está creada, elige otro nombre"
+    echo "* The folder '${folder}' is already created, choose another name"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   else
     mkdir -p ${linuxSambaFolder}/${folder} 2> /dev/null
     output=$?
     if [ ${output} -ne 0 ] ; then
-      echo "* Error: Fallo al crear la carpeta compartida '${folder}'"
+      echo "* Error: Failed to create shared folder '${folder}'"
       echo ""
-      echo -n "* Pulsa INTRO para continuar... " ; read continue
+      echo -n "* Press ENTER to continue... " ; read continue
     else
-      echo -n "* Introduce el nombre del usuario: " ; read forUser
+      echo -n "* Enter username: " ; read forUser
       randomFolder=/tmp/easy-samba/${RANDOM}-${RANDOM}
       mkdir -p ${randomFolder}
       chown ${forUser} ${randomFolder} 2> /dev/null
       output=$?
       if [ ${output} -ne 0 ] ; then
         rm -rf ${linuxSambaFolder}/${folder}
-        echo "* No existe el usuario especificado!"
+        echo "* The specified user does not exist!"
         echo ""
-        echo -n "* Pulsa INTRO para continuar... " ; read continue
+        echo -n "* Press ENTER to continue... " ; read continue
       else
         chmod 755 -R ${linuxSambaFolder}/${folder}
         chown ${forUser} -R ${linuxSambaFolder}/${folder}
@@ -347,7 +347,7 @@ function newFolderForUser() {
         echo "read only = no" >> ${sambaConfig}
         echo "guest ok = yes" >> ${sambaConfig}
         echo "" >> ${sambaConfig}
-        echo "* Carpeta compartida '${folder}' (para ${forUser}) creada con exito!"
+        echo "* Shared folder '${folder}' (for ${forUser}) created successfully!"
         createFolderLink ${folder}
       fi
     fi
@@ -357,24 +357,24 @@ function newFolderForUser() {
 # Crear carpeta compartida para imprimir
 function newFolderPrintable() {
   echo ""
-  echo -n "* Introduce el nombre de la carpeta que deseas crear (sin acentos): " ; read folder
+  echo -n "* Enter the name of the folder you want to create (without accents): " ; read folder
   formatText=$(convertText "${folder}")
   folder=${formatText}
   if [ -z ${folder} ] ; then
-    echo "* Debes introducir un nombre de carpeta!"
+    echo "* You must enter a folder name!"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   elif [ -d ${linuxSambaFolder}/${folder} ] ; then
-    echo "* La carpeta '${folder}' ya está creada, elige otro nombre"
+    echo "* The folder '${folder}' is already created, choose another name"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   else
     mkdir -p ${linuxSambaFolder}/${folder} 2> /dev/null
     output=$?
     if [ ${output} -ne 0 ] ; then
-      echo "* Error: Fallo al crear la carpeta compartida '${folder}'"
+      echo "* Error: Failed to create shared folder '${folder}'"
       echo ""
-      echo -n "* Pulsa INTRO para continuar... " ; read continue
+      echo -n "* Press ENTER to continue... " ; read continue
     else
       chmod 777 -R ${linuxSambaFolder}/${folder}
       echo "[${folder}]" >> ${sambaConfig}
@@ -394,17 +394,17 @@ function newFolderPrintable() {
 
 # Funcion para reiniciar el servicio de Samba
 function restartSamba() {
-  echo -n "* Deseas reiniciar los servicios de Samba (s[*]/n): " ; read sambaSN
+  echo -n "* Do you want to restart the Samba services? (y[*]/n): " ; read sambaSN
   if [ "${sambaSN}" == "n" ] ; then
     echo "nule" > /dev/null
   else
-    echo "* Reiniciando servicios de Samba"
+    echo "* Restarting Samba services"
     sleep 3
     /etc/init.d/samba restart &> /dev/null
     systemctl restart smbd.service 2> /dev/null
     systemctl restart nmbd.service 2> /dev/null
     systemctl restart smb.service 2> /dev/null
-    echo "* Servicios de Samba reiniciados"
+    echo "* Samba services restarted"
     echo ""
     sleep 3
   fi
@@ -413,30 +413,30 @@ function restartSamba() {
 # Funcion para todas borrar las carpetas compartidas
 function restoreSmb() {
   echo ""
-  echo "* Nota: Se van a eliminar todas las carpetas compartidas y su contenido!"
-  echo "* Importante: Se volvera al estado inicial del fichero 'smb.conf' antes de"
-  echo "  de ejecutar 'easy-samba' por primera vez."
+  echo "* Note: All shared folders and their content will be deleted!"
+  echo "* Important: It will return to the initial state of the file"
+  echo "  'smb.conf' before executing 'easy-samba' for the first time."
   echo ""
-  echo -n "* Deseas continuar (s/n[*]): " ; read deleteFolder
-  if [ "${deleteFolder}" == "s" ] ; then
-    echo "* Borrando carpetas..."
+  echo -n "* Do you want continue (y/n[*]): " ; read deleteFolder
+  if [ "${deleteFolder}" == "y" ] ; then
+    echo "* Deleting folders..."
     sleep 2
     rm -rf ${linuxSambaFolder}/* 2> /dev/null
     output=$?
     if [ ${output} -eq 0 ] ; then
-      echo "* Carpetas borradas con exito!"
+      echo "* Folders deleted successfully!"
       cp -rf ${sambaBackup} ${sambaConfig} 2> /dev/null
       #rm -rf ${sambaBackup} 2> /dev/null
       restartSamba
     else
-      echo "* Fallo al borrar las carpetas compartidas!"
+      echo "* Failed to delete shared folders!"
       echo ""
-      echo -n "* Pulsa INTRO para continuar... " ; read continue
+      echo -n "* Press ENTER to continue... " ; read continue
     fi
   else
-    echo "* Se ha anulado el proceso de restauracion"
+    echo "* The restore process has been aborted"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   fi
 }
 
@@ -446,40 +446,40 @@ function viewFolders() {
     cd ${linuxSambaFolder}
     ls > ${sambaFoldersList}
     echo ""
-    echo "* Lista de carpetas compartidas disponibles:"
+    echo "* List of available shared folders:"
     echo ""
     folderList=""
     for folderDetected in $(cat ${sambaFoldersList}) ; do
       echo " + ${folderDetected}"
     done
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   else
     echo ""
-    echo "* Actualmente no hay carpetas compartidas!"
+    echo "* There are currently no shared folders!"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   fi
 }
 
 # Funcion para borrar una carpeta compartida
 function removeFolder() {
   echo ""
-  echo -n "* Introduce el nombre de la carpeta que deseas borrar: " ; read folder
+  echo -n "* Enter the name of the folder you want to delete: " ; read folder
   if [ -z ${folder} ] ; then
-    echo "* Debes introducir un nombre de carpeta!"
+    echo "* You must enter a folder name!"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   elif [ -d ${linuxSambaFolder}/${folder} ] ; then
-    echo "* Borrando carpeta '${folder}' ..."
+    echo "* Deleting folder '${folder}' ..."
     rm -rf ${linuxSambaFolder}/${folder} 2> /dev/null
     output=$?
     if [ ${output} -eq 0 ] ; then
       readLine=$(cat ${sambaConfig} | grep "# Folder to ${linuxSambaFolder}/${folder} # 00bc00" -n | cut -d ":" -f 1)
       if [ -z ${readLine} ] ; then
-        echo "* La carpeta '${folder}' ha sido borrada pero no se ha encontrado en 'smb.conf'"
+        echo "* The folder '${folder}' has been deleted but not found in 'smb.conf'"
         echo ""
-        echo -n "* Pulsa INTRO para continuar... " ; read continue
+        echo -n "* Press ENTER to continue... " ; read continue
       else
         initLine=$(expr ${readLine} - 1)
         endLine=$(expr ${readLine} + 7)
@@ -497,18 +497,18 @@ function removeFolder() {
           count=$(expr ${count} + 1)
         done
         cp -rf /tmp/easy-samba/smb.conf ${sambaConfig}
-        echo "* La carpeta '${folder} ha sido borrada con exito!"
+        echo "* The folder '${folder} has been deleted successfully!"
         deleteFolderLink ${folder}
         restartSamba
       fi
     else
-      echo "* Error: No se ha podido borrar la carpeta '${folder}'"
+      echo "* Error: The folder '${folder}' could not be deleted"
       echo ""
-      echo -n "* Pulsa INTRO para continuar... " ; read continue
+      echo -n "* Press ENTER to continue... " ; read continue
     fi
   else
-    echo "* Error: La carpeta '${folder}' no existe!"
-    echo -n "* Deseas ver un listado con las carpetas disponibles? (s[*]/n): " ; read available
+    echo "* Error: The folder '${folder}' does not exist!"
+    echo -n "* Do you want to see a list of the available folders? (y[*]/n): " ; read available
     if [ "${available}" == "n" ] ; then
       echo "nule" > /dev/null
     else
@@ -520,14 +520,14 @@ function removeFolder() {
 # Funcion para mostrar el "acerca" del programa
 function mostrarAcerca() {
   echo ""
-  echo "* Acerca:"
+  echo "* About:"
   echo ""
   echo " - Software: easy-samba ${VERSION} (${M_DATE})"
-  echo " - Autor: q3aql"
-  echo " - Contacto: q3aql@protonmail.ch"
-  echo " - Licencia: GPL v2.0"
+  echo " - Author: q3aql"
+  echo " - Contact: q3aql@protonmail.ch"
+  echo " - License: GPL v2.0"
   echo ""
-  echo -n "* Pulsa INTRO para continuar... " ; read continue
+  echo -n "* Press ENTER to continue... " ; read continue
 }
 
 # Mostrar menu con todas las opciones
@@ -539,18 +539,18 @@ while [ ${mostrarMenu} -eq 0 ] ; do
   echo ""
   echo "* easy-samba ${VERSION} (${M_DATE})"
   echo ""
-  echo " 1  - Agregar carpeta a Samba"
-  echo " 2  - Crear carpeta compartida"
-  echo " 3  - Crear carpeta compartida (solo lectura)"
-  echo " 4  - Crear carpeta compartida (para un usuario)"
-  echo " 5  - Crear carpeta compartida (printable)"
-  echo " 6  - Reiniciar servicios de Samba"
-  echo " 7  - Ver carpetas compartidas disponibles"
-  echo " 8  - Borrar carpeta compartida"
-  echo " 9  - Restaurar smb.conf"
-  echo " 10 - Acerca"
+  echo " 1  - Add folder to Samba"
+  echo " 2  - Create shared folder"
+  echo " 3  - Create shared folder (read only)"
+  echo " 4  - Create shared folder (for a user)"
+  echo " 5  - Create shared folder (printable)"
+  echo " 6  - Restart Samba services"
+  echo " 7  - View available shared folders"
+  echo " 8  - Delete shared folder"
+  echo " 9  - Restore smb.conf"
+  echo " 10 - About"
   echo ""
-  echo " 11 - Salir"
+  echo " 11 - Exit"
   echo ""
   echo -n " * Elige una opcion: " ; read opcion
   if [ "${opcion}" == "1" ] ; then
@@ -582,13 +582,13 @@ while [ ${mostrarMenu} -eq 0 ] ; do
     mostrarMenu=1
   elif [ -z "${opcion}" ] ; then
     echo ""
-    echo "* Debes elegir alguna opcion"
+    echo "* You must choose an option "
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   else
     echo ""
-    echo "* Opcion no valida!"
+    echo "* Invalid option !"
     echo ""
-    echo -n "* Pulsa INTRO para continuar... " ; read continue
+    echo -n "* Press ENTER to continue... " ; read continue
   fi
 done
