@@ -1,7 +1,8 @@
 [Desktop Entry]
 Name=Easy-Samba
 GenericName=Easy-Samba
-Comment=Crea carpetas compartidas con Samba de forma facil
+Comment[es]=Interfaz básica para crear, agregar y eliminar carpetas en Samba
+Comment=Basic interface to create, add and remove folders in Samba
 TryExec=easy-samba-gtk-admin
 Exec=easy-samba-gtk-admin
 Icon=/usr/share/icons/easy-samba/easy-samba.png
